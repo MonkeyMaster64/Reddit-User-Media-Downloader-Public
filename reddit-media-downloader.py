@@ -5,7 +5,6 @@
 ## not the best but it works
 
 
-from locale import Error
 import requests, datetime
 import youtube_dl
 import argparse, sys
