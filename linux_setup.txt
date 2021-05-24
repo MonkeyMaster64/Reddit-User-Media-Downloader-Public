@@ -1,10 +1,6 @@
 git clone --recursive git@github.com:MonkeyMaster64/Reddit-User-Media-Downloader-Public.git
-git clone --recursive git@github.com:idealo/imagededup.git
 python3 -m venv ~/envs/Reddit-User-Media-Downloader-Public
 source ~/envs/Reddit-User-Media-Downloader-Public/bin/activate
-cd imagededup/
-pip install "cython>=0.29"
-python setup.py install
-cd ../Reddit-User-Media-Downloader-Public/
+cd ./Reddit-User-Media-Downloader-Public/
 pip install -r requirements.txt
 
