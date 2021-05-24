@@ -1,3 +1,5 @@
 imagededup
 youtube_dl
 opencv-python
+cython
+requests
