@@ -13,7 +13,7 @@ python reddit-media-downloader.py --user [case-sensitive username] --limit [maxi
 ## Requirements
 - Windows 10
 - Python 3.8
-- Microsoft Visual Studio Build Tools (C++ Build Tools) - https://visualstudio.microsoft.com/visual-cpp-build-tools/
+- Microsoft Visual Studio Build Tools (C++ Build Tools) 
 
 ### Python libraries
 - youtube_dl 
@@ -21,6 +21,22 @@ python reddit-media-downloader.py --user [case-sensitive username] --limit [maxi
 - OpenCV2
 - Cython
 - Requests
+
+### How to Install Python Requirements
+
+```
+pip install -r requirements.txt
+```
+
+### How to Install Visual C++ Build Tools
+
+1. Download the executable from this link - https://visualstudio.microsoft.com/visual-cpp-build-tools/
+2. Select the "C++ Build Tools" workload under "Desktop and Mobile"
+3. When it's finished downloading and installing, restart your PC
+
+![C++ Build Tools Instructions](https://user-images.githubusercontent.com/16315128/119354163-5cd54200-bc69-11eb-885c-4c3b9ab6cac0.png)
+
+
 
 ## Demo
 
