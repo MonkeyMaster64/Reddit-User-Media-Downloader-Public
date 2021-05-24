@@ -1,9 +1,18 @@
 #!/usr/bin/env python3
 
-## simple reddit media downloader
-## downloads reddit media quick & easy
-## not the best but it works
+'''
+Download all the images and videos from a Reddit user account and automatically remove the duplicates 
 
+Duplication removal algorithm using imagededup:
+
+- Extract and save first frame from each video downloaded as a file and in a dict
+- Use imagededup lib to get dictionary of all duplicates and originals in working folder
+- Iterate through the dictionary
+- If the value is in the dict of frames, delete the videos associated with the duplicate images as well as the duplicate images
+- Then, delete the original frame
+- If the value is not in the dict of frames, delete all the duplicates
+
+'''
 
 import requests, datetime
 import youtube_dl
@@ -15,25 +24,17 @@ import logging
 import cv2
 from imagededup.methods import PHash
 
-'''
-Duplication removal algorithm using imagededup
 
-- Extract and save first frame from each video downloaded as a file and in a dict
-- Use imagededup lib to get dictionary of all duplicates and originals in working folder
-- Iterate through the dictionary
-- If the value is in the dict of frames, delete the videos associated with the duplicate images as well as the duplicate images
-- Then, delete the original frame
-- If the value is not in the dict of frames, delete all the duplicates
-
-'''
 
 args = {}
 url_list = []
 
 # pushshift helper function
 def get_posts(post_type,params, cb, limit=-1):
+    #if a limit was specified by the user, set the size variable
     if limit != -1:
         if limit >= 100:
+            #pushshift caps requests at 100 so if the limit is more than 100, we'll have to do multiple passes
             size = 100
         else:
             size = limit
@@ -55,6 +56,7 @@ def get_posts(post_type,params, cb, limit=-1):
         res.raise_for_status()
         data = res.json()["data"]
         cb(data)
+        #stop fetching posts if we've there aren't any more or if we've hit the limit
         if len(data) < 100 or (limit != -1 and got >= limit):
             got += len(data)
             logging.info(f"Total of {got} posts fetched from u/{params['author']}")
@@ -103,11 +105,13 @@ def process_submission(post):
 def extractFirstFrame(cwd):
     logging.info("Beginning extraction of first frame from videos in the folder")
     videos = []
+    #get all the video files downloaded
     for file in os.listdir(cwd):
         if file.endswith(".mp4"):
             videos.append(file)
     print (videos)
     video_images = {}
+    #save the first frame from each video file
     for video in videos:
         vidcap = cv2.VideoCapture(os.path.join(cwd, video))
         success, image = vidcap.read()
@@ -133,10 +137,12 @@ def removeDuplicates(duplicates, video_frames, images_dir):
                         print(e)
                     duplicates[img] = []
             try:
+                #delete the jpeg created from the video frame
                 os.remove(os.path.join(images_dir, image))
             except FileNotFoundError as e:
                 print (e)
         else:
+            #if it's not a video frame, delete the duplicate images
             if duplicates[image]:
                 for dup in duplicates[image]:
                     try:
@@ -160,6 +166,7 @@ def main():
     parser.add_argument('--pushshift-params', help="JSON-formatted pushshift parameters", default='{}')
     args = parser.parse_args()
     logging.info(f"\n\n{'-'*30}\nBeginning download of media from user u/{args.user}")
+    #create the folder for the user if it doesn't exist
     try:
        os.makedirs(args.user)
        logging.info(f"Created folder for reddit user {args.user}")
