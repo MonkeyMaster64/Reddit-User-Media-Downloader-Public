@@ -1,5 +1,5 @@
 imagededup
 youtube_dl
-opencv-python
+opencv-python==4.5.2
 cython
 requests
