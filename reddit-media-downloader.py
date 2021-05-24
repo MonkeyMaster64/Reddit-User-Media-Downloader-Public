@@ -5,6 +5,7 @@
 ## not the best but it works
 
 
+from locale import Error
 import requests, datetime
 import youtube_dl
 import argparse, sys
@@ -73,16 +74,22 @@ def process_submission(post):
     try:
         if not post['is_self'] and post['url'] not in url_list:
             if not post['is_video'] and "gif" not in post['url']:
-                res = requests.get(post['url'])
-                if(res):
-                    print("Downloading file")
-                    print (post['url'])
-                    with open(f"{post['author']}\{datetime.datetime.now().strftime('%Y-%m-%dT%H%M%S')}-{post['url'].split('/')[-1]}", "wb+") as f:
-                        f.write(res.content)
-                        logging.info(f"Photo downloaded from {post['url']} and saved to {f.name}")
+                try:
+                    res = requests.get(post['url'])
+                    if(res):
+                        print("Downloading file")
+                        print (post['url'])
+                        target_file = os.path.join(post['author'], f"{datetime.datetime.now().strftime('%Y-%m-%dT%H%M%S')}-{post['url'].split('/')[-1]}")
+                        with open(target_file, "wb+") as f:
+                            f.write(res.content)
+                            logging.info(f"Photo downloaded from {post['url']} and saved to {f.name}")
+                except Exception:
+                    logging.error(f"Exception downloading {post['url']}.  Skipping.")
+                
             else:
                 print("Downloading video")
-                with youtube_dl.YoutubeDL({'outtmpl':f"{post['author']}\{datetime.datetime.now().strftime('%Y-%m-%dT%H%M%S')}-%(id)s.%(ext)s", 'max_downloads': 1}) as ydl:
+                target_file = os.path.join(post['author'], f"{datetime.datetime.now().strftime('%Y-%m-%dT%H%M%S')}-%(id)s.%(ext)s")
+                with youtube_dl.YoutubeDL({'outtmpl':target_file, 'max_downloads': 1}) as ydl:
                     try:
                         info_dict = ydl.extract_info(post['url'], download=False)
                         fn = os.path.basename(ydl.prepare_filename(info_dict))
@@ -103,11 +110,13 @@ def extractFirstFrame(cwd):
     print (videos)
     video_images = {}
     for video in videos:
-        vidcap = cv2.VideoCapture(cwd+video)
+        vidcap = cv2.VideoCapture(os.path.join(cwd, video))
         success, image = vidcap.read()
         if success:
-           cv2.imwrite(cwd+video+".jpg", image)
+           cv2.imwrite(os.path.join(cwd, video+".jpg"), image)
            video_images[os.path.basename(video)+".jpg"] = os.path.basename(video)
+        else:
+            logging.error(f"Unable to extract first frame from {video}")
     return video_images
     
        
@@ -118,21 +127,21 @@ def removeDuplicates(duplicates, video_frames, images_dir):
             if duplicates[image]:
                 for img in duplicates[image]:
                     try:
-                        os.remove(images_dir + video_frames[img])
-                        os.remove(images_dir + img)
+                        os.remove(os.path.join(images_dir, video_frames[img]))
+                        os.remove(os.path.join(images_dir, img))
                         logging.info(f"Duplicate video found. Deleting {video_frames[img]}")
                     except FileNotFoundError as e:
                         print(e)
                     duplicates[img] = []
             try:
-                os.remove(images_dir + image)
+                os.remove(os.path.join(images_dir, image))
             except FileNotFoundError as e:
                 print (e)
         else:
             if duplicates[image]:
                 for dup in duplicates[image]:
                     try:
-                        os.remove(images_dir + dup)
+                        os.remove(os.path.join(images_dir, dup))
                         logging.info(f"Duplicate picture found. Deleting {dup}")
                     except FileNotFoundError:
                         print(images_dir + dup + " not found")
@@ -143,6 +152,7 @@ def removeDuplicates(duplicates, video_frames, images_dir):
 def main():
     global args
     logging.basicConfig(format='%(asctime)s - %(levelname)s - %(message)s', level='INFO', filename='execution.log')
+    #logging.basicConfig(format='%(asctime)s - %(levelname)s - %(message)s', level='DEBUG', stream=sys.stdout)
     parser = argparse.ArgumentParser(description="Download reddit media")
     parser.add_argument('-u', '--user', help="USER to download from")
     parser.add_argument('-s', '--subreddit', help="SUBREDDIT to download from")
@@ -163,7 +173,7 @@ def main():
         get_posts('submission', {**json.loads(args.pushshift_params), 'subreddit':args.subreddit, 'author':args.user}, submission_callback)
     #get working directory
     cwd = os.getcwd()
-    images_dir = cwd + "\\" + args.user + "\\"
+    images_dir = os.path.join(cwd, args.user)
     #get dict of video first frames
     video_frames = extractFirstFrame(images_dir)
     #get dict of all duplicates in directory
