@@ -13,7 +13,10 @@ python reddit-media-downloader.py --user [case-sensitive username] --limit [maxi
 ## Requirements
 - Windows 10
 - Python 3.8
-- youtube_dl
+- Microsoft Visual Studio Build Tools (C++ Build Tools) - https://visualstudio.microsoft.com/visual-cpp-build-tools/
+
+### Python libraries
+- youtube_dl 
 - imagededup
 - OpenCV2
 
