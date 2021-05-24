@@ -19,6 +19,8 @@ python reddit-media-downloader.py --user [case-sensitive username] --limit [maxi
 - youtube_dl 
 - imagededup
 - OpenCV2
+- Cython
+- Requests
 
 ## Demo
 
