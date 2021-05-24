@@ -1,2 +1,3 @@
 imagededup
 youtube_dl
+opencv-python
