@@ -80,7 +80,7 @@ def process_submission(post):
                     if(res):
                         print("Downloading file")
                         print (post['url'])
-                        target_file = os.path.join(post['author'], f"{datetime.datetime.now().strftime('%Y-%m-%dT%H%M%S')}-{post['url'].split('/')[-1]}")
+                        target_file = os.path.join("output",post['author'], f"{datetime.datetime.now().strftime('%Y-%m-%dT%H%M%S')}-{post['url'].split('/')[-1]}")
                         with open(target_file, "wb+") as f:
                             f.write(res.content)
                             logging.info(f"Photo downloaded from {post['url']} and saved to {f.name}")
@@ -89,7 +89,7 @@ def process_submission(post):
                 
             else:
                 print("Downloading video")
-                target_file = os.path.join(post['author'], f"{datetime.datetime.now().strftime('%Y-%m-%dT%H%M%S')}-%(id)s.%(ext)s")
+                target_file = os.path.join("output",post['author'], f"{datetime.datetime.now().strftime('%Y-%m-%dT%H%M%S')}-%(id)s.%(ext)s")
                 with youtube_dl.YoutubeDL({'outtmpl':target_file, 'max_downloads': 1}) as ydl:
                     try:
                         info_dict = ydl.extract_info(post['url'], download=False)
@@ -166,9 +166,12 @@ def main():
     parser.add_argument('--pushshift-params', help="JSON-formatted pushshift parameters", default='{}')
     args = parser.parse_args()
     logging.info(f"\n\n{'-'*30}\nBeginning download of media from user u/{args.user}")
+    #get working directory
+    cwd = os.getcwd()
+    images_dir = os.path.join(cwd,"output", args.user)
     #create the folder for the user if it doesn't exist
     try:
-       os.makedirs(args.user)
+       os.makedirs(images_dir)
        logging.info(f"Created folder for reddit user {args.user}")
     except OSError as e:
        logging.info(f"Folder already exists for reddit user {args.user}")
@@ -177,9 +180,6 @@ def main():
         get_posts('submission', {**json.loads(args.pushshift_params), 'subreddit':args.subreddit, 'author':args.user}, submission_callback, int(args.limit))
     else:
         get_posts('submission', {**json.loads(args.pushshift_params), 'subreddit':args.subreddit, 'author':args.user}, submission_callback)
-    #get working directory
-    cwd = os.getcwd()
-    images_dir = os.path.join(cwd, args.user)
     #get dict of video first frames
     video_frames = extractFirstFrame(images_dir)
     #get dict of all duplicates in directory
