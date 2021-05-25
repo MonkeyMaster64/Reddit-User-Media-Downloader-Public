@@ -28,7 +28,7 @@ If you choose to run the tool natively, here is how you'd run it from Python in 
 
 ```--limit``` tag is optional
 ```
-python reddit-media-downloader.py --user [case-sensitive username] --limit [maximum number of posts to download from user]
+python3 reddit-media-downloader.py --user [case-sensitive username] --limit [maximum number of posts to download from user]
 ```
 ## Requirements
 - Python 3.8
