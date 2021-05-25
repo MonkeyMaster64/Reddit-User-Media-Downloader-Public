@@ -2,18 +2,37 @@
 
 Download all the picture/video posts from a particular user on Reddit, for uh...reasons. Automatically removes duplicates :star:.
 
-## Usage
+## QuickStart with Docker 
 
-Used from the command prompt
+The simplest way to run this tool is from Docker due to the number of overlapping dependencies.
+
+1. Install Docker from this link - https://docs.docker.com/engine/install/  (make sure virtualization is enabled in your BIOS)
+2. Pull the image from Docker Hub with
+```
+docker pull monkeymaster64/reddit-media-downloader:latest
+```
+3. To run the tool, from the shell (CMD for Windows, bash for Linux/MAC) run the following commmand
+```
+docker run -v "[Path to folder to store output]:/usr/src/app/Reddit-User-Media-Downloader-Public/output" reddit-media-downloader --user [Reddit username] --limit [maximum number of posts to download from user]
+```
+
+An example is
+
+```
+docker run -v "C:\Users\User\Downloadsr:/usr/src/app/Reddit-User-Media-Downloader-Public/output" reddit-media-downloader --user monkeymaster64 --limit 10
+```
+
+## Usage from Command Prompt
+
+If you choose to run the tool natively, here is how you'd run it from Python in your shell
 
 ```--limit``` tag is optional
 ```
 python reddit-media-downloader.py --user [case-sensitive username] --limit [maximum number of posts to download from user]
 ```
 ## Requirements
-- Windows 10
 - Python 3.8
-- Microsoft Visual Studio Build Tools (C++ Build Tools) 
+- Microsoft Visual Studio Build Tools (C++ Build Tools) <--- **only required if you're on Windows**
 
 ### Python libraries
 - youtube_dl 
