@@ -13,13 +13,13 @@ docker pull monkeymaster64/reddit-media-downloader:latest
 ```
 3. To run the tool, from the shell (CMD for Windows, bash for Linux/MAC) run the following commmand
 ```
-docker run -v "[Path to folder to store output]:/usr/src/app/Reddit-User-Media-Downloader-Public/output" reddit-media-downloader --user [Reddit username] --limit [maximum number of posts to download from user]
+docker run -v "[Path to folder to store output]:/usr/src/app/Reddit-User-Media-Downloader-Public/output" monkeymaster64/reddit-media-downloader --user [Reddit username] --limit [maximum number of posts to download from user]
 ```
 
 An example is
 
 ```
-docker run -v "C:\Users\User\Downloadsr:/usr/src/app/Reddit-User-Media-Downloader-Public/output" reddit-media-downloader --user monkeymaster64 --limit 10
+docker run -v "C:\Users\User\Downloadsr:/usr/src/app/Reddit-User-Media-Downloader-Public/output" monkeymaster64/reddit-media-downloader --user monkeymaster64 --limit 10
 ```
 
 ## Usage from Command Prompt
