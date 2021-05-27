@@ -55,10 +55,3 @@ pip install -r requirements.txt
 
 ![C++ Build Tools Instructions](https://user-images.githubusercontent.com/16315128/119354163-5cd54200-bc69-11eb-885c-4c3b9ab6cac0.png)
 
-
-
-## Demo
-
-
-https://user-images.githubusercontent.com/37257304/119284302-01716880-bc05-11eb-8f29-d2a1e42dbd92.mp4
-
