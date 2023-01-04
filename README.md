@@ -19,7 +19,7 @@ docker run -v "[Path to folder to store output]:/usr/src/app/Reddit-User-Media-D
 An example is
 
 ```
-docker run -v "C:\Users\User\Downloadsr:/usr/src/app/Reddit-User-Media-Downloader-Public/output" monkeymaster64/reddit-media-downloader --user monkeymaster64 --limit 10
+docker run -v "C:\Users\User\Downloads:/usr/src/app/Reddit-User-Media-Downloader-Public/output" monkeymaster64/reddit-media-downloader --user monkeymaster64 --limit 10
 ```
 
 ## Usage from Command Prompt
